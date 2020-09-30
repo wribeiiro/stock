@@ -7,22 +7,20 @@ class Model_users extends CI_Model
 		parent::__construct();
 	}
 
-	public function getUserData($userId = null) 
-	{
-		if($userId) {
+	public function getUserData($userId = null)  {
+		if ($userId) {
 			$sql = "SELECT * FROM users WHERE id = ?";
 			$query = $this->db->query($sql, array($userId));
 			return $query->row_array();
 		}
 
-		$sql = "SELECT * FROM users WHERE id != ?";
-		$query = $this->db->query($sql, array(1));
+		$sql = "SELECT * FROM users ORDER BY id desc";
+		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
 
-	public function getUserGroup($userId = null) 
-	{
-		if($userId) {
+	public function getUserGroup($userId = null) {
+		if ($userId) {
 			$sql = "SELECT * FROM user_group WHERE user_id = ?";
 			$query = $this->db->query($sql, array($userId));
 			$result = $query->row_array();
@@ -35,10 +33,9 @@ class Model_users extends CI_Model
 		}
 	}
 
-	public function create($data = '', $group_id = null)
-	{
+	public function create($data = '', $group_id = null) {
 
-		if($data && $group_id) {
+		if ($data && $group_id) {
 			$create = $this->db->insert('users', $data);
 
 			$user_id = $this->db->insert_id();
@@ -54,12 +51,11 @@ class Model_users extends CI_Model
 		}
 	}
 
-	public function edit($data = array(), $id = null, $group_id = null)
-	{
+	public function edit($data = array(), $id = null, $group_id = null) {
 		$this->db->where('id', $id);
 		$update = $this->db->update('users', $data);
 
-		if($group_id) {
+		if ($group_id) {
 			// user group
 			$update_user_group = array('group_id' => $group_id);
 			$this->db->where('user_id', $id);
@@ -70,18 +66,15 @@ class Model_users extends CI_Model
 		return ($update == true) ? true : false;	
 	}
 
-	public function delete($id)
-	{
+	public function delete($id) {
 		$this->db->where('id', $id);
 		$delete = $this->db->delete('users');
 		return ($delete == true) ? true : false;
 	}
 
-	public function countTotalUsers()
-	{
-		$sql = "SELECT * FROM users";
+	public function countTotalUsers() {
+		$sql = "SELECT id FROM users";
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
-	
 }
